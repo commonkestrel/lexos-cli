@@ -1,6 +1,6 @@
 # Lexos
 
-This tool is used for gathering the Lexile and Atos levels of books via their ISBN
+This tool is used for gathering the Lexile and Atos(AR) levels of books via their ISBN
 It uses the playwright-go package found [here](https://github.com/playwright-community/playwright-go) to find the results in a headless browser. \
 This does take quite a while depending on your internet connection, but unfortunatly since Lexile book finder requires Javascript, and ARBookFinder is a collection of ASPX pages, there is currently no workaround.
 
