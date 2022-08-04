@@ -150,9 +150,10 @@ func Help() {
 Lexos cli:
 This tool is used for gathering the Lexile and Atos levels of books via their ISBN
 
-Usage: lexos <ISBN> [--raw, --ln]
+Usage: lexos <ISBN> [--raw, --ln, --install]
 --raw: Print the raw numbers to the output, without labels (Prints Lexile followed by the Atos, as well as printing -1 if the result cannot be found)
---ln: Seperates the outputs with a new line`)
+--ln: Seperates the outputs with a new line
+--install: Installs the necessary driver and browser to run. This argument is required if it has not already been run, otherwise the program will throw an error.`)
 }
 
 func ProcessFlags() {
