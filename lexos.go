@@ -33,6 +33,11 @@ var (
 
 func main() {
     ProcessFlags()
+    
+    if Flag("install", false) {
+        playwright.Install()
+    }
+
     if len(Args) > 1 {
         fmt.Print("Need 1 argument: <ISBN>")
         return
@@ -45,10 +50,6 @@ func main() {
     if !valid {
         fmt.Print("Invalid ISBN!")
         return
-    }
-
-    if Flag("install", false) {
-        playwright.Install()
     }
 
     var err error
