@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/moraes/isbn"
+	isbnpkg "github.com/moraes/isbn"
 	"github.com/playwright-community/playwright-go"
 )
 
@@ -48,8 +48,8 @@ func main() {
         }
         return
     }
-    InputIsbn := Args[0]
-    valid := isbn.Validate(InputIsbn)
+    isbn := Args[0]
+    valid := isbnpkg.Validate(isbn)
     if !valid {
         fmt.Print("Invalid ISBN!")
         return
@@ -67,13 +67,13 @@ func main() {
     page, err = browser.NewPage()
     catch(err)
 
-    lex := Lexile(InputIsbn)
-    at := Atos(InputIsbn)
+    lex := Lexile(isbn)
+    at := Atos(isbn)
     Print(lex, at)
 }
 
-func Lexile(Input string) int {
-    page.Goto(fmt.Sprint(LEXILE, Input))
+func Lexile(isbn string) int {
+    page.Goto(fmt.Sprint(LEXILE, isbn))
     str, err := page.TextContent(LEXILE_SELECTOR)
     if err != nil {
         return -1
@@ -85,25 +85,25 @@ func Lexile(Input string) int {
     return lex
 }
 
-func Atos(Input string) float64 {
+func Atos(isbn string) float64 {
     page.Goto(ATOS)
-    page.Click(RAD)
+    page.Click(RAD) //Select Librarian and submit
     page.Click(SUBMIT)
 
     page.WaitForSelector(ISBN_BOX)
-    page.Type(ISBN_BOX, Input)
+    page.Type(ISBN_BOX, isbn)
     page.Click(SEARCH)
 
     page.WaitForSelector(TITLE)
-    page.Click(TITLE)
+    page.Click(TITLE) //Click on first book
 
     page.WaitForSelector(ATOS_SELECTOR)
-    str, err := page.TextContent(ATOS_SELECTOR)
+    str, err := page.TextContent(ATOS_SELECTOR) //Get level from selector
     if err != nil {
         return -1
     }
     var ar float64
-    fmt.Sscan(str, &ar)
+    fmt.Sscan(str, &ar) //Convert level to float
     return ar
 }
 
