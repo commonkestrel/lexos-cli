@@ -18,6 +18,7 @@ const (
     SUBMIT = "#btnSubmitUserType"
     ISBN_BOX = "#ctl00_ContentPlaceHolder1_txtISBN"
     SEARCH = "#ctl00_ContentPlaceHolder1_btnDoIt"
+    SEARCH_FAIL = "#ctl00_ContentPlaceHolder1_lblSearchResultFailedLabel"
     TITLE = "#book-title"
     ATOS_SELECTOR = "#ctl00_ContentPlaceHolder1_ucBookDetail_lblBookLevel"
 )
@@ -66,14 +67,19 @@ func main() {
 
     page, err = browser.NewPage()
     catch(err)
-
+    
+    ar := Atos(isbn)
     lex := Lexile(isbn)
-    at := Atos(isbn)
-    Print(lex, at)
+    
+    Print(lex, ar)
 }
 
 func Lexile(isbn string) int {
     page.Goto(fmt.Sprint(LEXILE, isbn))
+    if page.URL() == "https://hub.lexile.com/find-a-book/book-results" {
+        return -1
+    }
+
     str, err := page.TextContent(LEXILE_SELECTOR)
     if err != nil {
         return -1
@@ -93,11 +99,19 @@ func Atos(isbn string) float64 {
     page.WaitForSelector(ISBN_BOX)
     page.Type(ISBN_BOX, isbn)
     page.Click(SEARCH)
+    
+    page.WaitForLoadState("domcontentloaded")
+    fail, _ := page.Locator(SEARCH_FAIL)
+    count, _ := fail.Count()
+    if count > 0 {
+        return -1
+    }
 
     page.WaitForSelector(TITLE)
     page.Click(TITLE) //Click on first book
 
-    page.WaitForSelector(ATOS_SELECTOR)
+    
+    
     str, err := page.TextContent(ATOS_SELECTOR) //Get level from selector
     if err != nil {
         return -1
