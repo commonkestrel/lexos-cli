@@ -1,4 +1,4 @@
-# Lexos cli
+# Lexos
 
 This tool is used for gathering the Lexile and Atos levels of books via their ISBN
 It uses the playwright-go package found [here](https://github.com/playwright-community/playwright-go) to find the results in a headless browser. \
