@@ -35,14 +35,17 @@ func main() {
     ProcessFlags()
     
     if Flag("install", false) {
-        playwright.Install()
+        run := playwright.RunOptions{Browsers: []string{"chromium"}}
+        playwright.Install(&run)
     }
 
     if len(Args) > 1 {
         fmt.Print("Need 1 argument: <ISBN>")
         return
     } else if len(Args) == 0 {
-        Help()
+        if !Flag("install", false) {
+            Help()
+        }
         return
     }
     InputIsbn := Args[0]
