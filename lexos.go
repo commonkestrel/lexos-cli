@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"strings"
+    "fmt"
+    "os"
+    "strings"
 
-	isbnpkg "github.com/moraes/isbn"
-	"github.com/playwright-community/playwright-go"
+    isbnpkg "github.com/moraes/isbn"
+    "github.com/playwright-community/playwright-go"
 )
 
 const (
