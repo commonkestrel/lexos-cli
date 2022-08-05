@@ -1,4 +1,4 @@
-module example/lexos
+module github.com/Jibble330/lexos
 
 go 1.18
 
