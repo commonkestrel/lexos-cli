@@ -20,7 +20,8 @@ const (
     SEARCH = "#ctl00_ContentPlaceHolder1_btnDoIt"
     SEARCH_FAIL = "#ctl00_ContentPlaceHolder1_lblSearchResultFailedLabel"
     TITLE = "#book-title"
-    ATOS_SELECTOR = "#ctl00_ContentPlaceHolder1_ucBookDetail_lblBookLevel"
+    ATOS_LEVEL = "#ctl00_ContentPlaceHolder1_ucBookDetail_lblBookLevel"
+    AR_POINTS = "#ctl00_ContentPlaceHolder1_ucBookDetail_lblPoints"
 )
 
 var (
@@ -68,10 +69,10 @@ func main() {
     page, err = browser.NewPage()
     catch(err)
     
-    ar := Atos(isbn)
+    atos, ar := Atos(isbn)
     lex := Lexile(isbn)
     
-    Print(lex, ar)
+    Print(lex, atos, ar)
 }
 
 func Lexile(isbn string) int {
@@ -91,7 +92,7 @@ func Lexile(isbn string) int {
     return lex
 }
 
-func Atos(isbn string) float64 {
+func Atos(isbn string) (float64, float64) {
     page.Goto(ATOS)
     page.Click(RAD) //Select Librarian and submit
     page.Click(SUBMIT)
@@ -104,29 +105,35 @@ func Atos(isbn string) float64 {
     fail, _ := page.Locator(SEARCH_FAIL)
     count, _ := fail.Count()
     if count > 0 {
-        return -1
+        return -1, -1
     }
 
     page.WaitForSelector(TITLE)
     page.Click(TITLE) //Click on first book
 
-    
-    
-    str, err := page.TextContent(ATOS_SELECTOR) //Get level from selector
-    if err != nil {
-        return -1
-    }
+    var atos float64
     var ar float64
-    fmt.Sscan(str, &ar) //Convert level to float
-    return ar
+    AtosStr, err := page.TextContent(ATOS_LEVEL) //Get level from selector
+    if err != nil {
+        AtosStr = "-1"
+    }
+    ArStr, err := page.TextContent(AR_POINTS)
+    if err != nil {
+        ArStr = "-1"
+    }
+    
+    fmt.Sscan(ArStr, &ar)
+    fmt.Sscan(AtosStr, &atos)
+    return atos, ar
 }
 
-func Print(lex int, ar float64) {
+func Print(lex int, atos float64, ar float64) {
     raw := Flag("raw", false)
     ln := Flag("ln", false)
 
     var lexile string
-    var atos string
+    var AtosStr string
+    var ArStr string
 
     if lex == -1 {
         lexile = "Not found!"
@@ -134,14 +141,26 @@ func Print(lex int, ar float64) {
         lexile = fmt.Sprint(lex)
     }
 
-    if ar == -1 {
-        atos = "Not found!"
+    if atos == -1 {
+        AtosStr = "Not found!"
     } else {
-        atos = fmt.Sprint(ar)
+        AtosStr = fmt.Sprint(atos)
+    }
+
+    if ar == -1 {
+        ArStr = "Not found!"
+    } else {
+        ArStr = fmt.Sprint(ar)
     }
 
     if raw {
         fmt.Print(lex)
+        if ln {
+            fmt.Println()
+        } else {
+            fmt.Print(" ")
+        }
+        fmt.Print(atos)
         if ln {
             fmt.Println()
         } else {
@@ -155,7 +174,13 @@ func Print(lex int, ar float64) {
         } else {
             fmt.Print(" | ")
         }
-        fmt.Print("AR: ", atos)
+        fmt.Print("Atos Level: ", AtosStr)
+        if ln {
+            fmt.Println()
+        } else {
+            fmt.Print(" | ")
+        }
+        fmt.Print("AR Points: ", ArStr)
     }
 }
 
