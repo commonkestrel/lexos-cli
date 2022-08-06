@@ -36,8 +36,9 @@ var (
 func main() {
     ProcessFlags()
     
+    verbose := Flag("verbose", false)
     if Flag("install", false) {
-        run := playwright.RunOptions{Browsers: []string{"chromium"}}
+        run := playwright.RunOptions{Browsers: []string{"chromium"}, Verbose: verbose}
         playwright.Install(&run)
     }
 
@@ -57,6 +58,9 @@ func main() {
         return
     }
 
+    if verbose {
+        fmt.Println("Starting browser")
+    }
     var err error
     pw, err = playwright.Run()
     catch(err)
@@ -69,7 +73,13 @@ func main() {
     page, err = browser.NewPage()
     catch(err)
     
+    if verbose {
+        fmt.Println("Gathering Atos level and AR points")
+    }
     atos, ar := Atos(isbn)
+    if verbose {
+        fmt.Println("Gathering Lexile level\n")
+    }
     lex := Lexile(isbn)
     
     Print(lex, atos, ar)
@@ -190,9 +200,10 @@ Lexos cli:
 This tool is used for gathering the Lexile level, Atos(AR) level, and AR Points of books via their ISBN.
 
 Usage: lexos <ISBN> [--raw, --ln, --install]
---raw: Print the raw numbers to the output, without labels (Prints in order: Lexile Level, Atos Level, AR Points, as well as printing -1 if the result cannot be found)
---ln: Seperates the outputs with a new line
---install: Installs the necessary driver and browser to run. This argument is required if it has not already been run, otherwise the program will throw an error.`)
+--raw: Print the raw numbers to the output, without labels (Prints in order: Lexile Level, Atos Level, AR Points, as well as printing -1 if the result cannot be found).
+--ln: Seperates the outputs with a new line.
+--install: Installs the necessary driver and browser to run. This argument is required if it has not already been run, otherwise the program will throw an error.
+--verbose: Enables progress updates.`)
     fmt.Println()
 }
 
