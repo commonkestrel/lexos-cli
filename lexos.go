@@ -199,7 +199,7 @@ func Help() {
 Lexos cli:
 This tool is used for gathering the Lexile level, Atos(AR) level, and AR Points of books via their ISBN.
 
-Usage: lexos <ISBN> [--raw, --ln, --install]
+Usage: lexos <ISBN> [--raw, --ln, --install, --verbose]
 --raw: Print the raw numbers to the output, without labels (Prints in order: Lexile Level, Atos Level, AR Points, as well as printing -1 if the result cannot be found).
 --ln: Seperates the outputs with a new line.
 --install: Installs the necessary driver and browser to run. This argument is required if it has not already been run, otherwise the program will throw an error.
