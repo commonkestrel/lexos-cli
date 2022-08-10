@@ -1,0 +1,12 @@
+Search if not found:
+    *GET https://openlibrary.org/isbn/ISBN.json (Replace ISBN with book ISBN)
+    *Search with the obtained title in Lexile & AR
+    Lexile:
+        *Search in the "input[name=quickSearch]" selector
+        *Click on first element with the "div[data-testid=book-summary]" selector
+        
+    AR:
+        *Search in the "#ctl00_ContentPlaceHolder1_txtTitle" selector
+    
+    Proceed as normal
+        
