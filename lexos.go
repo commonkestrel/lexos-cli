@@ -51,7 +51,7 @@ func main() {
         }
         return
     }
-    isbn := Args[0]
+    isbn := strings.Replace(Args[0], "-", "")
     valid := isbnpkg.Validate(isbn)
     if !valid {
         fmt.Print("Invalid ISBN!")
